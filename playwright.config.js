@@ -15,6 +15,7 @@ export default defineConfig({
   reporter: [["html", { outputFolder: reportDir, open: "never" }]],
 
 use: {
+    channel: 'chrome',
     screenshot: "only-on-failure",
     headless: true,
     // trace: "retain-on-failure",
