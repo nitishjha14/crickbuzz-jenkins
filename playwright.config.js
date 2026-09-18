@@ -1,8 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from "@playwright/test";
 
-const reportDir = process.env.REPORT_DIR || "reports/html-report";
-
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -12,10 +10,16 @@ export default defineConfig({
   // forbidOnly: !!process.env.CI,
   // retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: [["html", { outputFolder: reportDir, open: "never" }]],
 
-use: {
-    channel: 'chrome',
+  reporter: [
+    ["html", {
+      outputFolder: "playwright-report",
+      open: "never"
+    }]
+  ],
+
+  use: {
+    channel: "chrome",
     screenshot: "only-on-failure",
     headless: true,
     // trace: "retain-on-failure",
