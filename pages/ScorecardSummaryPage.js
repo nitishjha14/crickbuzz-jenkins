@@ -6,7 +6,9 @@ class ScorecardPage {
   }
 
   async goto() {
-    await this.page.goto('https://www.cricbuzz.com/');
+    await this.page.goto('https://www.cricbuzz.com/', {
+      waitUntil: 'domcontentloaded'
+    });
   }
 
   async clickFirstCard() {
@@ -21,52 +23,71 @@ class ScorecardPage {
     const nameSpan = this.firstCard.locator('a > div > span');
     const rawNameText = await nameSpan.textContent();
     const matchName = rawNameText.trim();
+
     return matchName;
   }
 
   async getFirstCardScores() {
-    const teamLocator1 = this.firstCard.locator('a > div:nth-child(2) > div:nth-child(1) > div > .hidden');
-    const scoreLocator1 = this.firstCard.locator('a > div:nth-child(2) > div:nth-child(1) > span');
-    const teamLocator2 = this.firstCard.locator('a > div:nth-child(2) > div:nth-child(2) > div > .hidden');
-    const scoreLocator2 = this.firstCard.locator('a > div:nth-child(2) > div:nth-child(2) > span');
+    const teamLocator1 = this.firstCard.locator(
+      'a > div:nth-child(2) > div:nth-child(1)'
+    );
 
-    const team1 = await teamLocator1.textContent();
-    const score1 = await scoreLocator1.textContent();
-    const team2 = await teamLocator2.textContent();
-    const score2 = await scoreLocator2.textContent();
+    const teamLocator2 = this.firstCard.locator(
+      'a > div:nth-child(2) > div:nth-child(2)'
+    );
 
-    return [ 
-        {team: team1, score: score1 },
-        {team: team2, score: score2 }
-    ]
+    const team1Texts = await teamLocator1.locator('span').allTextContents();
+    const team2Texts = await teamLocator2.locator('span').allTextContents();
+
+    const team1 = team1Texts[0].trim();
+    const team2 = team2Texts[0].trim();
+
+    const score1 = team1Texts.find(text => /\d/.test(text))?.trim() || '';
+    const score2 = team2Texts.find(text => /\d/.test(text))?.trim() || '';
+
+    return [
+      { team: team1, score: score1 },
+      { team: team2, score: score2 }
+    ];
   }
 
   async getAllScoreCards(index) {
     const card = this.page.locator('.carousal-item').nth(index);
-    const teamLocator1 = card.locator('a > div:nth-child(2) > div:nth-child(1) > div > .hidden');
-    const scoreLocator1 = card.locator('a > div:nth-child(2) > div:nth-child(1) > span');
-    const teamLocator2 = card.locator('a > div:nth-child(2) > div:nth-child(2) > div > .hidden');
-    const scoreLocator2 = card.locator('a > div:nth-child(2) > div:nth-child(2) > span');
 
-    const team1 = await teamLocator1.textContent();
-    const score1 = await scoreLocator1.textContent();
-    const team2 = await teamLocator2.textContent();
-    const score2 = await scoreLocator2.textContent();
+    const teamContainer1 = card.locator(
+      'a > div:nth-child(2) > div:nth-child(1)'
+    );
 
-    return [ 
-        {team: team1, score: score1 },
-        {team: team2, score: score2 }
-    ]
+    const teamContainer2 = card.locator(
+      'a > div:nth-child(2) > div:nth-child(2)'
+    );
+
+    const team1Texts = await teamContainer1.locator('span').allTextContents();
+    const team2Texts = await teamContainer2.locator('span').allTextContents();
+
+    const team1 = team1Texts[0]?.trim() || '';
+    const team2 = team2Texts[0]?.trim() || '';
+
+    const score1 = team1Texts.find(text => /\d/.test(text))?.trim() || '';
+    const score2 = team2Texts.find(text => /\d/.test(text))?.trim() || '';
+
+    return [
+      {
+        team: team1,
+        score: score1
+      },
+      {
+        team: team2,
+        score: score2
+      }
+    ];
   }
 
   async getCardCount() {
-  const count = await this.page.locator('.carousal-item').count();
-  return count;
+    const count = await this.page.locator('.carousal-item').count();
+
+    return count;
+  }
 }
-
-  
-}
-
-
 
 export default ScorecardPage;

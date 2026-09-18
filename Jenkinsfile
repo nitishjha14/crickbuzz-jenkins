@@ -17,11 +17,20 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Scorecard Tests') {
             steps {
                 bat '''
                 set PLAYWRIGHT_BROWSERS_PATH=0
                 npx playwright test tests/scorecard.spec.js
+                '''
+            }
+        }
+
+        stage('Run Scorecard Summary Tests') {
+            steps {
+                bat '''
+                set PLAYWRIGHT_BROWSERS_PATH=0
+                npx playwright test tests/scoreCardSummary.spec.js
                 '''
             }
         }

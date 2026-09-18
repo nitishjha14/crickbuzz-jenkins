@@ -23,9 +23,17 @@ test('print all score cards at once', async({page}) => {
 
     for(let i=0; i < cardCount; i++) {
         const scores = await scoreCardPage.getAllScoreCards(i);
-        console.log(`${scores[0].team} - ${scores[0].score}`);
-        console.log(`${scores[1].team} - ${scores[1].score}`);
-    }
-});
-
-})
+        console.log(
+              scores[0].score
+                ? `${scores[0].team} - ${scores[0].score}`
+                : scores[0].team
+            
+        );
+        console.log(
+              scores[1].score
+                ? `${scores[1].team} - ${scores[1].score}`
+                : scores[1].team
+            );
+            }
+        });
+    })
